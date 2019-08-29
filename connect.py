@@ -20,7 +20,9 @@ def scrape_data(url: str) -> str:
 
 def substr_strs(source: str, begin: str, end: str) -> str:
       begin_index = source.find(begin)
-      end_index = (source[ begin_index: ]).find(end)
+      end_index = (source[ begin_index: ]).find(end) + begin_index
+
+      print ('begin_index: ' + str(begin_index) + ', end_index: ' + str(end_index) )
       return source[ begin_index : end_index ] 
 
 def scrape_walmart_tvs() -> list:
@@ -28,29 +30,18 @@ def scrape_walmart_tvs() -> list:
 
       #search for tv's
       #curr_page = scrape_data(web_name + '/search/?page=4&ps=40&query=tv')
-      
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-      print(curr_page)
+      with open('output.html', 'r') as myfile:
+            curr_page = myfile.read()
 
       #narrow response to search content
-      curr_page = substr_strs(curr_page, '<script id="searchContent"', '<div class="js-footer-content">')
+      curr_page = substr_strs(curr_page, '<script id="searchContent\"', '<div class="js-footer-content">')
       
       urls_list = list()
 
       curr_entry_loc = curr_page.find('/ip/')
+
+      
 
       #loop through and grab all links to products from search results
       while curr_entry_loc != -1:
