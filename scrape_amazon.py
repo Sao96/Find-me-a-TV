@@ -32,38 +32,37 @@ def parse_product_links(search_result: str) -> list:
 
 def process_product_page(prod_page: str) -> dict:
     tv_info = dict()
+    
+    ##### OBTAIN BRAND NAME AND MODEL 
+
+    details_sec = prod_page[ prod_page.find('Brand Name') : ]
+    start_sec_ind = details_sec.find('<td class="a-size-base">              ') + len('<td class="a-size-base">              ')
+    tv_info['brand'] = details_sec[ start_sec_ind : details_sec.find(' ', start_sec_ind) ]
+
+    details_sec = details_sec[ details_sec.find('Item model number') : ]
+    start_sec_ind = details_sec.find('<td class="a-size-base">              ') + len('<td class="a-size-base">              ')
+    tv_info['model'] = details_sec[ start_sec_ind : details_sec.find(' ', start_sec_ind) ]
+
+    ##### OBTAIN THE REST OF THE META DATA
+
     prod_page = substr_strs(prod_page, '<span class="a-size-base a-color-base">Customer Rating</span>', 'Total HDMI Ports')
     
-    tv_info['price'] = substr_strs(prod_page, '$', '<')
+    start_sec_ind = prod_page.find('$') + 1
+    tv_info['price'] = prod_page[ start_sec_ind : prod_page.find( '<', start_sec_ind)]
 
-    loop_targets = ['Display Size', 'Display Type', 'disp_tech', 'Refresh Rate', 'Resolution' ]
-
-    #push prod_page to next important column of info table
-    prod_page = prod_page[ prod_page.find('Display Size') : ]
-    prod_page = prod_page[ prod_page.find('<span class="a-size-base a-color-base">') : ]
-
+    loop_targets = [ ('Display Size', 'screen_size'), ('Display Type', 'disp_technology'), ('Refresh Rate', 'ref_rate'), ('Resolution', 'resolution' ) ]
     
+    #the page reads linearly, following a search sequence like this. 
+    for field in loop_targets:
 
-    tv_info['screen_size'] = substr_strs(prod_page, '>', '<') 
+        #push prod_page to next important column of info table
+        prod_page = prod_page[ prod_page.find(field[0]) : ]
+        prod_page = prod_page[ prod_page.find('<span class="a-size-base a-color-base">') : ]
+        start_sec_ind = prod_page.find('>') + 1
+        tv_info[field[1]] = prod_page[ start_sec_ind : prod_page.find( '<', start_sec_ind)] 
+        #tv_info[field[1]] = substr_strs(prod_page, '>', '<') 
 
-    #push prod_page to next important column of info table
-    prod_page = prod_page[ prod_page.find('Display Type') : ]
-    prod_page = prod_page[ prod_page.find('<span class="a-size-base a-color-base">') : ]
-
-    tv_info['disp_technology'] = substr_strs(prod_page, '>', '<') 
-
-    #push prod_page to next important column of info table
-    prod_page = prod_page[ prod_page.find('Refresh Rate') : ]
-    prod_page = prod_page[ prod_page.find('<span class="a-size-base a-color-base">') : ]
-
-    tv_info['ref_rate'] = substr_strs(prod_page, '>', '<') 
-
-    #push prod_page to next important column of info table
-    prod_page = prod_page[ prod_page.find('Resolution') : ]
-    prod_page = prod_page[ prod_page.find('<span class="a-size-base a-color-base">') : ]
-
-    tv_info['resolution'] = substr_strs(prod_page, '>', '<') 
-
+    print(tv_info)
 
 
 def process_urls(urls_list : list) -> list():
