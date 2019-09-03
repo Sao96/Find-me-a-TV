@@ -60,7 +60,6 @@ def process_product_page(prod_page: str) -> dict:
         prod_page = prod_page[ prod_page.find('<span class="a-size-base a-color-base">') : ]
         start_sec_ind = prod_page.find('>') + 1
         tv_info[field[1]] = prod_page[ start_sec_ind : prod_page.find( '<', start_sec_ind)] 
-        #tv_info[field[1]] = substr_strs(prod_page, '>', '<') 
 
     print(tv_info)
 
