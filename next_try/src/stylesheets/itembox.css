@@ -1,0 +1,41 @@
+@import "https://fonts.googleapis.com/css?family=Libre+Franklin|Raleway|Roboto+Condensed&display=swap";
+
+.itembox {
+  font-family: "Times New Roman", Times, serif;
+  color: rgb(19, 122, 19);
+}
+
+.main-bg {
+  background-color: rgb(206, 244, 255);
+}
+
+#homecontainer {
+  background-color: rgb(255, 255, 255);
+}
+
+.product-text {
+  color: #000000;
+  font-family: "Roboto Condensed", sans-serif;
+  font-size: large;
+}
+
+.price-text {
+  color: green;
+  font-family: "Raleway", sans-serif;
+  font-size: x-large;
+}
+
+.text_pos {
+  position: absolute;
+  top: 90%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.image_size {
+  height: auto;
+  width: auto;
+  max-width: 400px;
+  max-height: 400px;
+}
+/*# sourceMappingURL=itembox.css.map */
