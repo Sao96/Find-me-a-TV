@@ -13,13 +13,13 @@ class ConcernFroge extends Component {
 }
 
 function TVPagination(props) {
-  const active = props.active;
+  const curr_page = props.curr_page;
   const num_pages = props.num_pages;
 
   let items = [];
-  for (let number = 1; number <= 5; number++) {
+  for (let number = 1; number <= num_pages; number++) {
     items.push(
-      <Pagination.Item key={number} active={number === active}>
+      <Pagination.Item key={number} active={number === curr_page}>
         {number}
       </Pagination.Item>
     );
@@ -32,15 +32,6 @@ function TVPagination(props) {
   );
 
   return paginationBasic;
-}
-
-function DisplayTv(props) {
-  const curr_state = props.state;
-  if (curr_state === null) {
-    return <ConcernFroge />;
-  }
-
-  return <RenderTvs tvs={props.tvs} />;
 }
 
 // over here, we get the list of TVs & state of the home container.
@@ -64,19 +55,40 @@ function RenderTvs(props) {
       <Container>
         <Row>{build_tv_list}</Row>
       </Container>
-      <TVPagination active={2} num_pages={10} />
     </div>
   );
 }
 
+function DisplayTv(props) {
+  if (props.state === null) {
+    return <ConcernFroge />;
+  }
+
+  const active = props.state.active;
+
+  const curr_page = props.state.curr_page;
+  const num_pages = props.state.num_pages;
+
+  return (
+    <div>
+      <RenderTvs tvs={props.tvs} />
+      <TVPagination curr_page={curr_page} num_pages={num_pages} />
+    </div>
+  );
+}
+
+//main body component that holds all TV's
+//
 class HomeContainer extends Component {
   constructor(props) {
     super(props);
     this.state = null;
     this.tvs = null;
+    this.tv_disp_count = 30;
     this.getTvs();
   }
 
+  // Obtain TVs from the database. Update state upon completion.
   getTvs() {
     var xhr = new XMLHttpRequest();
 
@@ -84,7 +96,11 @@ class HomeContainer extends Component {
     xhr.addEventListener("load", () => {
       // update the state of the component with the result here
       this.tvs = JSON.parse(xhr.responseText);
-      this.setState({ update: true });
+      this.setState({
+        active: true,
+        curr_page: 1,
+        num_pages: Math.ceil(this.tvs.length / this.tv_disp_count)
+      });
     });
     // open the request with the verb and the url
     xhr.open("POST", "http://localhost:8080");
