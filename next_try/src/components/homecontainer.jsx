@@ -13,12 +13,9 @@ class ConcernFroge extends Component {
 }
 
 function TVPagination(props) {
-  const active = props.acitve;
+  const active = props.active;
   const num_pages = props.num_pages;
 
-  if (active === null || !active || num_pages === null || !num_pages) {
-    return;
-  }
   let items = [];
   for (let number = 1; number <= 5; number++) {
     items.push(
@@ -63,10 +60,12 @@ function RenderTvs(props) {
     </Col>
   ));
   return (
-    <Container>
-      <Row>{build_tv_list}</Row>
-    </Container>
-    <TVPagination tvs = />
+    <div>
+      <Container>
+        <Row>{build_tv_list}</Row>
+      </Container>
+      <TVPagination active={2} num_pages={10} />
+    </div>
   );
 }
 
