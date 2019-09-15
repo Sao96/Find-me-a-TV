@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Col, Row } from "react-bootstrap";
+import { Container, Col, Row, Pagination } from "react-bootstrap";
 import ItemBox from "./itembox";
 
 class ConcernFroge extends Component {
@@ -10,6 +10,31 @@ class ConcernFroge extends Component {
       </div>
     );
   }
+}
+
+function TVPagination(props) {
+  const active = props.acitve;
+  const num_pages = props.num_pages;
+
+  if (active === null || !active || num_pages === null || !num_pages) {
+    return;
+  }
+  let items = [];
+  for (let number = 1; number <= 5; number++) {
+    items.push(
+      <Pagination.Item key={number} active={number === active}>
+        {number}
+      </Pagination.Item>
+    );
+  }
+
+  const paginationBasic = (
+    <div>
+      <Pagination>{items}</Pagination>
+    </div>
+  );
+
+  return paginationBasic;
 }
 
 function DisplayTv(props) {
@@ -41,6 +66,7 @@ function RenderTvs(props) {
     <Container>
       <Row>{build_tv_list}</Row>
     </Container>
+    <TVPagination tvs = />
   );
 }
 
@@ -72,9 +98,7 @@ class HomeContainer extends Component {
   render() {
     return (
       <div id="homecontainer">
-        <Container>
-          <DisplayTv tvs={this.tvs} state={this.state} />
-        </Container>
+        <DisplayTv tvs={this.tvs} state={this.state} />
       </div>
     );
   }
