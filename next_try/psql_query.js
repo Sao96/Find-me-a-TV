@@ -1,13 +1,15 @@
 var express = require("express");
 var pg = require("pg");
 var cors = require("cors");
+var bodyParser = require("body-parser");
 
 var app = express();
-
 var port = process.env.PORT || 8080;
 
 app.use(express.static(__dirname));
 app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 //routing
 app.get("/", function(req, res) {
@@ -18,14 +20,9 @@ app.listen(port, function() {
   console.log("greetings");
 });
 
-// Parse URL-encoded bodies (as sent by HTML forms)
-app.use(express.urlencoded());
-
-// Parse JSON bodies (as sent by API clients)
-app.use(express.json());
-
 // Access the parse results as request.body
 app.post("/", function(request, response) {
+  console.log(request.body.query);
   console.log("lmFAO");
   var client = new pg.Client({
     user: "vxnzeehptioyeb",
@@ -39,13 +36,13 @@ app.post("/", function(request, response) {
 
   client.connect();
 
-  var query = client.query("SELECT * FROM walmart", (err, res) => {
+  var query = client.query(request.body.query, (err, res) => {
     if (err) {
       console.log(400).send(err.stack);
       response.status(400).send(err.stack);
       return err.stack;
     } else {
-      console.log(res.rows);
+      //console.log(res.rows);
       response.status(200).send(res.rows);
       return res.rows;
     }

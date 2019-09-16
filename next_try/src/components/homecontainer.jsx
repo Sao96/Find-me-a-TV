@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { Container, Col, Row, Pagination, PageItem } from "react-bootstrap";
+import {
+  Container,
+  Col,
+  Row,
+  Pagination,
+  PageItem,
+  Form
+} from "react-bootstrap";
 import ItemBox from "./itembox";
 
 class ConcernFroge extends Component {
@@ -19,11 +26,64 @@ class HomeContainer extends Component {
     super(props);
     this.state = null;
     this.tvs = null;
-    this.getTvs();
+    this.getTvs("SELECT * FROM WALMART;");
+  }
+
+  //form to get what we need to query.
+  SearchSettings() {
+    return (
+      <div>
+        <Form>
+          <Form.Row>
+            <Form.Group as={Col} controlId="formGridBrand">
+              <Form.Control as="select">
+                <option>Brand...</option>
+                <option>...</option>
+              </Form.Control>
+            </Form.Group>
+
+            <Form.Group as={Col} controlId="formGridPrice">
+              <Form.Control as="select">
+                <option>Price...</option>
+                <option>...</option>
+              </Form.Control>
+            </Form.Group>
+
+            <Form.Group as={Col} controlId="formGridStore">
+              <Form.Control as="select">
+                <option>Store...</option>
+                <option>...</option>
+              </Form.Control>
+            </Form.Group>
+
+            <Form.Group as={Col} controlId="formGridDisplay Size">
+              <Form.Control as="select">
+                <option>Size...</option>
+                <option>...</option>
+              </Form.Control>
+            </Form.Group>
+
+            <Form.Group as={Col} controlId="formGridTechnology">
+              <Form.Control as="select">
+                <option>Technology...</option>
+                <option>...</option>
+              </Form.Control>
+            </Form.Group>
+
+            <Form.Group as={Col} controlId="formGridResolution">
+              <Form.Control as="select">
+                <option>Resolution...</option>
+                <option>...</option>
+              </Form.Control>
+            </Form.Group>
+          </Form.Row>
+        </Form>
+      </div>
+    );
   }
 
   // Obtain TVs from the database. Update state upon completion.
-  getTvs() {
+  getTvs(desired_query) {
     var xhr = new XMLHttpRequest();
 
     // get a callback when the server responds
@@ -40,9 +100,9 @@ class HomeContainer extends Component {
     // open the request with the verb and the url
     xhr.open("POST", "http://localhost:8080");
 
-    xhr.setRequestHeader("Content-Type", "text/plain");
+    xhr.setRequestHeader("Content-Type", "application/json");
     // send the request
-    xhr.send(JSON.stringify({ query: "SELECT * FROM WALMART" }));
+    xhr.send(JSON.stringify({ query: desired_query }));
   }
 
   update_curr_page(pageNumber) {
@@ -112,6 +172,7 @@ class HomeContainer extends Component {
 
     return (
       <div>
+        {this.SearchSettings()}
         {this.RenderTvs()}
         <br></br>
         {this.TVPagination()}
