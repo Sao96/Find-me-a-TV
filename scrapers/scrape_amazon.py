@@ -50,7 +50,7 @@ def process_product_page(prod_page: str) -> dict:
     start_sec_ind = prod_page.find('$') + 1
     tv_info['price'] = prod_page[ start_sec_ind : prod_page.find( '<', start_sec_ind)]
 
-    loop_targets = [ ('Display Size', 'screen_size'), ('Display Type', 'disp_technology'), ('Refresh Rate', 'ref_rate'), ('Resolution', 'resolution' ) ]
+    loop_targets = [ ('Display Size', 'display_size'), ('Display Type', 'disp_tech'), ('Refresh Rate', 'ref_rate'), ('Resolution', 'resolution' ) ]
     
     #the page reads linearly, following a search sequence like this. 
     for field in loop_targets:
@@ -63,40 +63,64 @@ def process_product_page(prod_page: str) -> dict:
 
     print(tv_info)
 
+    return tv_info
+
 
 def process_urls(urls_list : list) -> list():
     products = list()
 
     ctr = 0
 
-    #   for prod_url in urls_list:
-    #         #sleep for 10 (will be 30) seconds to gracefully scrape with very minimal requests. MUST update time when done, too agressive now.
-    #         time.sleep(2)
-    #         curr_page = scrape_data("https://amazon.com" + prod_url)
-    #         products.append(process_product_page(curr_page))
+    for prod_url in urls_list:
+        #sleep for 10 (will be 30) seconds to gracefully scrape with very minimal requests. MUST update time when done, too agressive now.
+        time.sleep(2)
+        curr_page = scrape_data("https://amazon.com" + prod_url)
+        products.append(process_product_page(curr_page))
 
-    with open('amazon_prod.html', 'r') as myFile:
-        curr_page = myFile.read()      
-        
+    # with open('amazon_prod.html', 'r') as myFile:
+    #     curr_page = myFile.read()      
 
-    process_product_page(curr_page)
+    return products
 
-    #return products
+#     goes through a given list of dicts values and searches for any empty strings and replaces with 'NULL'
+#     @tvs: list of dict objects that represent TV's
+#     @return: @tvs with any field containing the empty string as NULL
+def add_null_vals(tvs: list) -> list:
+      for tv in tvs:
+            for field in tv:
+                  if tv[field] == '':
+                        tv[field] = 'NULL'
+      return tvs
+
+def remove_extra_chars(tvs: list) -> list:
+    for tv in tvs:
+        for field in tv:
+            if (tv[field].find(' ') != -1):
+                tv[field] = tv[field][ : tv[field].find(' ') ]
+    
+    return tvs
 
 def scrape_amazon_tvs() -> list:
-    web_name = 'https://amazon.com'
-
     #search for tv's
-    #curr_page = scrape_data(web_name + '/search/?page=4&ps=40&query=tv')
+    
 
-    with open('amaz_search.html', 'r') as myfile:
-        curr_page = myfile.read()
+    # with open('amaz_search.html', 'r') as myfile:
+    #     curr_page = myfile.read()
+    tvs = list()
     
     #narrow response to search content. Here, we particularly care about the links to each product.
-    curr_page = curr_page[ curr_page.find('<span data-component-type="s-product-image" class="rush-component">        <a class="a-link-normal" href="/') : ]
-    
-    urls_list = parse_product_links(curr_page)
+    for page_num in range(2,5):
+        curr_page= scrape_data("https://www.amazon.com/s?k=tv&page=" + str(page_num))
 
-    return process_urls(urls_list)
+        #narrow response to search content
+        curr_page = curr_page[ curr_page.find('<div class="a-section a-spacing-none">') : ]
+        urls_list = parse_product_links(curr_page)
 
+        #takes a while, since we need to sleep after each op to perform graceful scraping
+        tvs = tvs + process_urls(urls_list)
+        print(tvs)
 
+    tvs = add_null_vals(tvs)
+    tvs = remove_extra_chars(tvs)
+
+    return tvs

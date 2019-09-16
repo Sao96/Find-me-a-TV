@@ -49,6 +49,4 @@ app.post("/", function(request, response) {
 
     client.end();
   });
-  // console.log(request.body.user.name);
-  // console.log(request.body.user.email);
 });
