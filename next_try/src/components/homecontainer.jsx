@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Col, Row, Pagination } from "react-bootstrap";
+import { Container, Col, Row, Pagination, PageItem } from "react-bootstrap";
 import ItemBox from "./itembox";
 
 class ConcernFroge extends Component {
@@ -12,71 +12,6 @@ class ConcernFroge extends Component {
   }
 }
 
-function TVPagination(props) {
-  const curr_page = props.curr_page;
-  const num_pages = props.num_pages;
-
-  let items = [];
-  for (let number = 1; number <= num_pages; number++) {
-    items.push(
-      <Pagination.Item key={number} active={number === curr_page}>
-        {number}
-      </Pagination.Item>
-    );
-  }
-
-  const paginationBasic = (
-    <div>
-      <Pagination>{items}</Pagination>
-    </div>
-  );
-
-  return paginationBasic;
-}
-
-// over here, we get the list of TVs & state of the home container.
-function RenderTvs(props) {
-  const tvs_list = props.tvs;
-
-  const build_tv_list = tvs_list.map(tvs_list => (
-    <Col>
-      <ItemBox
-        state={tvs_list.state}
-        product_url={tvs_list.product_url}
-        thumb_url={tvs_list.thumb_url}
-        brand={tvs_list.brand}
-        model={tvs_list.model}
-        price={tvs_list.price}
-      />
-    </Col>
-  ));
-  return (
-    <div>
-      <Container>
-        <Row>{build_tv_list}</Row>
-      </Container>
-    </div>
-  );
-}
-
-function DisplayTv(props) {
-  if (props.state === null) {
-    return <ConcernFroge />;
-  }
-
-  const active = props.state.active;
-
-  const curr_page = props.state.curr_page;
-  const num_pages = props.state.num_pages;
-
-  return (
-    <div>
-      <RenderTvs tvs={props.tvs} />
-      <TVPagination curr_page={curr_page} num_pages={num_pages} />
-    </div>
-  );
-}
-
 //main body component that holds all TV's
 //
 class HomeContainer extends Component {
@@ -84,7 +19,6 @@ class HomeContainer extends Component {
     super(props);
     this.state = null;
     this.tvs = null;
-    this.tv_disp_count = 30;
     this.getTvs();
   }
 
@@ -99,7 +33,8 @@ class HomeContainer extends Component {
       this.setState({
         active: true,
         curr_page: 1,
-        num_pages: Math.ceil(this.tvs.length / this.tv_disp_count)
+        disp_count: 30,
+        num_pages: Math.ceil(this.tvs.length / 30)
       });
     });
     // open the request with the verb and the url
@@ -110,12 +45,82 @@ class HomeContainer extends Component {
     xhr.send(JSON.stringify({ query: "SELECT * FROM WALMART" }));
   }
 
-  render() {
-    return (
-      <div id="homecontainer">
-        <DisplayTv tvs={this.tvs} state={this.state} />
+  update_curr_page(pageNumber) {
+    console.log("current page: " + pageNumber);
+    this.setState({ curr_page: pageNumber });
+  }
+
+  TVPagination(props) {
+    let items = [];
+    for (let number = 1; number <= this.state.num_pages; number++) {
+      items.push(
+        <PageItem
+          key={number}
+          onClick={this.update_curr_page.bind(this, number)}
+          onChange={this.update_curr_page}
+          active={number === this.state.curr_page}
+        >
+          {number}
+        </PageItem>
+      );
+    }
+
+    const paginationBasic = (
+      <div className="center">
+        <Pagination>{items}</Pagination>
       </div>
     );
+
+    return paginationBasic;
+  }
+
+  // over here, we get the list of TVs & state of the home container.
+  RenderTvs() {
+    const start_index = this.state.disp_count * (this.state.curr_page - 1);
+    const end_index = Math.min(
+      this.tvs.length - 1,
+      start_index + this.state.disp_count - 1
+    );
+
+    console.log(this.tvs.slice(start_index, end_index + 1));
+    const build_tv_list = this.tvs
+      .slice(start_index, end_index + 1)
+      .map(tvs => (
+        <Col>
+          <ItemBox
+            product_url={tvs.product_url}
+            thumb_url={tvs.thumb_url}
+            brand={tvs.brand}
+            model={tvs.model}
+            price={tvs.price}
+          />
+        </Col>
+      ));
+    return (
+      <div>
+        <Container>
+          <Row>{build_tv_list}</Row>
+        </Container>
+      </div>
+    );
+  }
+
+  DisplayTv(props) {
+    if (this.state === null) {
+      return <ConcernFroge />;
+    }
+
+    return (
+      <div>
+        {this.RenderTvs()}
+        <br></br>
+        {this.TVPagination()}
+      </div>
+    );
+  }
+
+  render() {
+    return <div id="homecontainer">{this.DisplayTv()}</div>;
   }
 }
 

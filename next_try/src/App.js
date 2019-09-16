@@ -14,8 +14,6 @@ function App() {
   document.body.classList.add("main-bg");
   return (
     <div className="App">
-      <TopNavbar />
-      <br></br>
       <HomeContainer />
     </div>
   );

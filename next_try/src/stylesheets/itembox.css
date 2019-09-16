@@ -6,7 +6,7 @@
 }
 
 .main-bg {
-  background-color: rgb(206, 244, 255);
+  background-color: rgb(255, 255, 255);
 }
 
 #homecontainer {
@@ -16,13 +16,13 @@
 .product-text {
   color: #000000;
   font-family: "Roboto Condensed", sans-serif;
-  font-size: large;
+  font-size: medium;
 }
 
 .price-text {
   color: green;
   font-family: "Raleway", sans-serif;
-  font-size: x-large;
+  font-size: medium;
 }
 
 .text_pos {
@@ -33,9 +33,12 @@
 }
 
 .image_size {
-  height: auto;
-  width: auto;
-  max-width: 400px;
-  max-height: 400px;
+  max-width: 340px;
+  max-height: 340px;
+}
+
+.center {
+  position: absolute;
+  left: 46.5%;
 }
 /*# sourceMappingURL=itembox.css.map */
