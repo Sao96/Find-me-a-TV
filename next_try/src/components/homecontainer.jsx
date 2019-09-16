@@ -26,7 +26,7 @@ class HomeContainer extends Component {
     super(props);
     this.state = null;
     this.tvs = null;
-    this.getTvs("SELECT * FROM WALMART;");
+    this.getTvs("select * from walmart union all select * from amazon;");
   }
 
   //form to get what we need to query.
