@@ -30,8 +30,23 @@ def parse_product_links(search_result: str) -> list:
     
     return filter(remove_bad_url, urls_list)
 
-def process_product_page(prod_page: str) -> dict:
+def get_image_url(prod_page: str) -> str:
+
+    prod_page = prod_page[ prod_page.find('{"hiRes":') : ]
+    
+    url_start_index = prod_page.find('"large":"') + len('"large":"')
+    url_end_index = prod_page.find('"', url_start_index)
+    return ( prod_page[ url_start_index : url_end_index ] )
+
+def process_product_page(prod_page: str, prod_url: str) -> dict:
     tv_info = dict()
+
+    ##### DEFINE TV URL
+
+    tv_info['product_url'] = prod_url
+
+    ##### OBTAIN TV IMAGE URL
+    tv_info['thumb_url'] = get_image_url(prod_page)
     
     ##### OBTAIN BRAND NAME AND MODEL 
 
@@ -48,9 +63,11 @@ def process_product_page(prod_page: str) -> dict:
     prod_page = substr_strs(prod_page, '<span class="a-size-base a-color-base">Customer Rating</span>', 'Total HDMI Ports')
     
     start_sec_ind = prod_page.find('$') + 1
-    tv_info['price'] = prod_page[ start_sec_ind : prod_page.find( '<', start_sec_ind)]
+    
+    #need to remove , from money or else messes with sql querry.
+    tv_info['price'] = (prod_page[ start_sec_ind : prod_page.find( '<', start_sec_ind)]).replace(',', '')
 
-    loop_targets = [ ('Display Size', 'display_size'), ('Display Type', 'disp_tech'), ('Refresh Rate', 'ref_rate'), ('Resolution', 'resolution' ) ]
+    loop_targets = [ ('Display Size', 'display_size'), ('Display Type', 'display_tech'), ('Refresh Rate', 'ref_rate'), ('Resolution', 'resolution' ) ]
     
     #the page reads linearly, following a search sequence like this. 
     for field in loop_targets:
@@ -61,6 +78,8 @@ def process_product_page(prod_page: str) -> dict:
         start_sec_ind = prod_page.find('>') + 1
         tv_info[field[1]] = prod_page[ start_sec_ind : prod_page.find( '<', start_sec_ind)] 
 
+    #We can't have anything not a number here for the psql DB
+    tv_info['ref_rate'] = get_num_only(tv_info['ref_rate'])
     print(tv_info)
 
     return tv_info
@@ -74,8 +93,9 @@ def process_urls(urls_list : list) -> list():
     for prod_url in urls_list:
         #sleep for 10 (will be 30) seconds to gracefully scrape with very minimal requests. MUST update time when done, too agressive now.
         time.sleep(2)
-        curr_page = scrape_data("https://amazon.com" + prod_url)
-        products.append(process_product_page(curr_page))
+        true_url = "https://amazon.com" + prod_url
+        curr_page = scrape_data(true_url)
+        products.append(process_product_page(curr_page, true_url))
 
     # with open('amazon_prod.html', 'r') as myFile:
     #     curr_page = myFile.read()      
@@ -101,11 +121,6 @@ def remove_extra_chars(tvs: list) -> list:
     return tvs
 
 def scrape_amazon_tvs() -> list:
-    #search for tv's
-    
-
-    # with open('amaz_search.html', 'r') as myfile:
-    #     curr_page = myfile.read()
     tvs = list()
     
     #narrow response to search content. Here, we particularly care about the links to each product.

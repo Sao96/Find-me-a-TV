@@ -31,3 +31,10 @@ def substr_strs(source: str, begin: str, end: str) -> str:
       end_index = source.find(end, begin_index) 
 
       return source[ begin_index : end_index + 1 ] 
+
+def get_num_only(s:str) -> str:
+      for pos in range(0, len(s)):
+            if not (s[pos].isdigit() or s[pos]=='.'):
+                  return s[0:pos]
+
+      return s

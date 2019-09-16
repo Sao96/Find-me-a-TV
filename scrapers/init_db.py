@@ -16,8 +16,8 @@ def create_tables():
         """,
         
         """ CREATE TABLE WALMART(
-            model text,
-            brand text PRIMARY KEY,
+            model text PRIMARY KEY,
+            brand text ,
             price float,
             display_size float,
             display_tech text,
