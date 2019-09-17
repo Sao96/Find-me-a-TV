@@ -5,7 +5,8 @@ import {
   Row,
   Pagination,
   PageItem,
-  Form
+  Form,
+  Button
 } from "react-bootstrap";
 import ItemBox from "./itembox";
 
@@ -26,7 +27,37 @@ class HomeContainer extends Component {
     super(props);
     this.state = null;
     this.tvs = null;
+    this.theme = `
+    .btn-flat {
+      background: rgb(95, 218, 255);
+      color: rgb(255, 255, 255);
+      border: 2px solid rgba(0, 126, 148, 0.349);
+      border-radius: 4px;
+      padding: 5px 10px;
+      font-family: 'Raleway', sans-serif;
+    }
+  `;
     this.getTvs("select * from walmart union all select * from amazon;");
+  }
+
+  FormGetOptions(field) {
+    let field_only = new Array();
+
+    for (let n = 0; n < this.tvs.length; n++) {
+      if (this.tvs[n][field] != "NULL") field_only.push(this.tvs[n][field]);
+    }
+
+    //Convert to set to remove dupes, flip back to list.
+    field_only = new Set(field_only);
+    field_only = Array.from(field_only);
+
+    let field_options = [];
+
+    for (let n = 0; n < field_only.length; n++) {
+      field_options.push(<option> {field_only[n]}</option>);
+    }
+
+    return field_options;
   }
 
   //form to get what we need to query.
@@ -38,43 +69,58 @@ class HomeContainer extends Component {
             <Form.Group as={Col} controlId="formGridBrand">
               <Form.Control as="select">
                 <option>Brand...</option>
-                <option>...</option>
+                {this.FormGetOptions("brand")}
               </Form.Control>
             </Form.Group>
 
             <Form.Group as={Col} controlId="formGridPrice">
               <Form.Control as="select">
                 <option>Price...</option>
-                <option>...</option>
+                <option>Under $500</option>
+                <option>Under $1000</option>
+                <option>Under $1500</option>
+                <option>Under $2000</option>
+                <option>$2000+</option>
               </Form.Control>
             </Form.Group>
 
             <Form.Group as={Col} controlId="formGridStore">
               <Form.Control as="select">
                 <option>Store...</option>
-                <option>...</option>
+                <option>Amazon</option>
+                <option>Walmart</option>
               </Form.Control>
             </Form.Group>
 
             <Form.Group as={Col} controlId="formGridDisplay Size">
               <Form.Control as="select">
                 <option>Size...</option>
-                <option>...</option>
+                <option>{"<"}30"</option>
+                <option>{"<"}50"</option>
+                <option>{"<"}60"</option>
+                <option>{"<"}70"</option>
+                <option>70+</option>
               </Form.Control>
             </Form.Group>
 
             <Form.Group as={Col} controlId="formGridTechnology">
               <Form.Control as="select">
                 <option>Technology...</option>
-                <option>...</option>
+                {this.FormGetOptions("display_tech")}
               </Form.Control>
             </Form.Group>
 
             <Form.Group as={Col} controlId="formGridResolution">
               <Form.Control as="select">
                 <option>Resolution...</option>
-                <option>...</option>
+                {this.FormGetOptions("resolution")}
               </Form.Control>
+            </Form.Group>
+            <Form.Group as={Col} controlId="formGridSubmit">
+              <style type="text/css"> {this.theme}</style>
+              <Button variant="flat" type="submit">
+                Search
+              </Button>
             </Form.Group>
           </Form.Row>
         </Form>

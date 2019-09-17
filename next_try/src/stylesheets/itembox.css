@@ -1,4 +1,4 @@
-@import "https://fonts.googleapis.com/css?family=Libre+Franklin|Raleway|Roboto+Condensed&display=swap";
+@import "https://fonts.googleapis.com/css?family=Libre+Franklin|Raleway|Gayathri|Roboto+Condensed&display=swap";
 
 .itembox {
   font-family: "Times New Roman", Times, serif;
@@ -40,5 +40,17 @@
 .center {
   position: absolute;
   left: 46.5%;
+}
+
+.content {
+  padding: 10px;
+}
+
+.btn-lmao {
+  background: rgb(95, 218, 255);
+  color: rgb(255, 255, 255);
+  border: 2px solid rgba(3, 159, 221, 0.349);
+  border-radius: 3px;
+  padding: 5px 10px;
 }
 /*# sourceMappingURL=itembox.css.map */
