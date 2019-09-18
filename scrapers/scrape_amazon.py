@@ -106,11 +106,12 @@ def process_urls(urls_list : list) -> list():
 #     @tvs: list of dict objects that represent TV's
 #     @return: @tvs with any field containing the empty string as NULL
 def add_null_vals(tvs: list) -> list:
-      for tv in tvs:
-            for field in tv:
-                  if tv[field] == '':
-                        tv[field] = 'NULL'
-      return tvs
+    tvs = [tv for tv in tvs if (tv['model'] != '')]
+    for tv in tvs:
+        for field in tv:
+                if tv[field] == '':
+                    tv[field] = 'NULL'
+    return tvs
 
 def remove_extra_chars(tvs: list) -> list:
     for tv in tvs:
@@ -124,7 +125,7 @@ def scrape_amazon_tvs() -> list:
     tvs = list()
     
     #narrow response to search content. Here, we particularly care about the links to each product.
-    for page_num in range(2,5):
+    for page_num in range(2,7):
         curr_page= scrape_data("https://www.amazon.com/s?k=tv&page=" + str(page_num))
 
         #narrow response to search content
@@ -139,3 +140,6 @@ def scrape_amazon_tvs() -> list:
     tvs = remove_extra_chars(tvs)
 
     return tvs
+
+
+    

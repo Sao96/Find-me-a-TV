@@ -3,6 +3,7 @@
 .itembox {
   font-family: "Times New Roman", Times, serif;
   color: rgb(19, 122, 19);
+  width: 100%;
 }
 
 .main-bg {
@@ -28,12 +29,14 @@
 .text_pos {
   position: absolute;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -10%);
 }
 
 .image_size {
   max-width: 350px;
-  max-height: 250px;
+  max-height: 350px;
+  min-width: 300px;
+  min-height: 300px;
 }
 
 .banner {
@@ -48,6 +51,13 @@
   display: block;
 }
 
+#pagination {
+  border: 2px solid rgba(5, 218, 255, 0.349);
+  border-radius: 2px;
+  color: white;
+}
+
+/*# sourceMappingURL=test.css.map */
 .center {
   position: absolute;
   left: 46.5%;

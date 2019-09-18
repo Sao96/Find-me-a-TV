@@ -38,3 +38,7 @@ def get_num_only(s:str) -> str:
                   return s[0:pos]
 
       return s
+
+
+
+      

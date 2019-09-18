@@ -43,6 +43,9 @@ class HomeContainer extends Component {
       padding: 5px 10px;
       font-family: 'Raleway', sans-serif;
     }
+
+
+ 
   `;
     this.getTvs("select * from walmart union all select * from amazon;");
   }
@@ -124,7 +127,6 @@ class HomeContainer extends Component {
               </Form.Control>
             </Form.Group>
             <Form.Group as={Col} controlId="formGridSubmit">
-              <style type="text/css"> {this.theme}</style>
               <Button
                 variant="flat"
                 type="button"
@@ -279,6 +281,7 @@ class HomeContainer extends Component {
           onClick={this.update_curr_page.bind(this, number)}
           onChange={this.update_curr_page}
           active={number === this.state.curr_page}
+          className={"paginationLinkStyle"}
         >
           {number}
         </PageItem>
@@ -287,7 +290,7 @@ class HomeContainer extends Component {
 
     const paginationBasic = (
       <div className="center">
-        <Pagination>{items}</Pagination>
+        <Pagination variant="Info">{items}</Pagination>
       </div>
     );
 
@@ -338,13 +341,20 @@ class HomeContainer extends Component {
         {this.SearchSettings()}
         {this.RenderTvs()}
         <br></br>
+        <br></br>
+        <br></br>
         {this.TVPagination()}
       </div>
     );
   }
 
   render() {
-    return <div id="homecontainer">{this.DisplayTv()}</div>;
+    return (
+      <div id="homecontainer">
+        <style type="text/css"> {this.theme}</style>
+        {this.DisplayTv()}
+      </div>
+    );
   }
 }
 

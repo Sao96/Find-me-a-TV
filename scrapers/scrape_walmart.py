@@ -109,6 +109,8 @@ def process_product_page(prod_page: str, url: str) -> dict:
       prod_page = prod_page[prod_page.find('//i5.') : ]
       tv_info['thumb_url'] = prod_page[ : prod_page.find('"') ]
       
+      print(tv_info)
+
       return tv_info
 
 
@@ -127,10 +129,15 @@ def process_urls(urls_list : list) -> list():
       return products
       
 
+
 #     goes through a given list of dicts values and searches for any empty strings and replaces with 'NULL'
 #     @tvs: list of dict objects that represent TV's
 #     @return: @tvs with any field containing the empty string as NULL
-def add_null_vals(tvs: dict) -> dict:
+def add_null_vals(tvs: list) -> list:
+
+      #remove any tvs that have model field being null
+      tvs = [tv for tv in tvs if (tv['model'] != '')]
+
       for tv in tvs:
             for field in tv:
                   if tv[field] == '':
