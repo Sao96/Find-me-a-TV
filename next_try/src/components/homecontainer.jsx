@@ -306,15 +306,18 @@ class HomeContainer extends Component {
     const build_tv_list = this.curr_tvs
       .slice(start_index, end_index + 1)
       .map(tvs => (
-        <Col>
-          <ItemBox
-            product_url={tvs.product_url}
-            thumb_url={tvs.thumb_url}
-            brand={tvs.brand}
-            model={tvs.model}
-            price={tvs.price}
-          />
-        </Col>
+        <div>
+          <br></br> <br></br>
+          <Col>
+            <ItemBox
+              product_url={tvs.product_url}
+              thumb_url={tvs.thumb_url}
+              brand={tvs.brand}
+              model={tvs.model}
+              price={tvs.price}
+            />
+          </Col>
+        </div>
       ));
     return (
       <div>

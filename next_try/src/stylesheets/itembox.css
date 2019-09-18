@@ -27,14 +27,13 @@
 
 .text_pos {
   position: absolute;
-  top: 90%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
 
 .image_size {
-  max-width: 340px;
-  max-height: 340px;
+  max-width: 350px;
+  max-height: 250px;
 }
 
 .banner {
@@ -45,7 +44,7 @@
     rgba(61, 110, 122, 1) 100%
   );
 
-  color: rgba(86, 216, 255, 1);
+  color: rgb(68, 189, 226);
   display: block;
 }
 
