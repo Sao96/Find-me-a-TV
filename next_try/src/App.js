@@ -1,11 +1,9 @@
 import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
-import TopNavbar from "./components/navbar";
 import "./stylesheets/itembox.css";
 
 import HomeContainer from "./components/homecontainer";
-
+import MainBanner from "./components/mainbanner";
 function background_color() {
   return;
 }
@@ -13,8 +11,13 @@ function background_color() {
 function App() {
   document.body.classList.add("main-bg");
   return (
-    <div className="App">
-      <HomeContainer />
+    <div>
+      <MainBanner />
+
+      <div className="App">
+        <br></br>
+        <HomeContainer />
+      </div>
     </div>
   );
 }

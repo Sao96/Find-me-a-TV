@@ -27,9 +27,16 @@ class HomeContainer extends Component {
     super(props);
     this.state = null;
     this.tvs = null;
+    this.curr_tvs = null;
+    this.brand = React.createRef();
+    this.price = React.createRef();
+    this.store = React.createRef();
+    this.display_size = React.createRef();
+    this.technology = React.createRef();
+    this.resolution = React.createRef();
     this.theme = `
     .btn-flat {
-      background: rgb(95, 218, 255);
+      background: rgb(68, 189, 226);
       color: rgb(255, 255, 255);
       border: 2px solid rgba(0, 126, 148, 0.349);
       border-radius: 4px;
@@ -67,14 +74,14 @@ class HomeContainer extends Component {
         <Form>
           <Form.Row>
             <Form.Group as={Col} controlId="formGridBrand">
-              <Form.Control as="select">
+              <Form.Control as="select" ref={this.brand}>
                 <option>Brand...</option>
                 {this.FormGetOptions("brand")}
               </Form.Control>
             </Form.Group>
 
             <Form.Group as={Col} controlId="formGridPrice">
-              <Form.Control as="select">
+              <Form.Control as="select" ref={this.price}>
                 <option>Price...</option>
                 <option>Under $500</option>
                 <option>Under $1000</option>
@@ -85,7 +92,7 @@ class HomeContainer extends Component {
             </Form.Group>
 
             <Form.Group as={Col} controlId="formGridStore">
-              <Form.Control as="select">
+              <Form.Control as="select" ref={this.store}>
                 <option>Store...</option>
                 <option>Amazon</option>
                 <option>Walmart</option>
@@ -93,32 +100,36 @@ class HomeContainer extends Component {
             </Form.Group>
 
             <Form.Group as={Col} controlId="formGridDisplay Size">
-              <Form.Control as="select">
+              <Form.Control as="select" ref={this.display_size}>
                 <option>Size...</option>
                 <option>{"<"}30"</option>
                 <option>{"<"}50"</option>
                 <option>{"<"}60"</option>
                 <option>{"<"}70"</option>
-                <option>70+</option>
+                <option>70"+</option>
               </Form.Control>
             </Form.Group>
 
             <Form.Group as={Col} controlId="formGridTechnology">
-              <Form.Control as="select">
+              <Form.Control as="select" ref={this.technology}>
                 <option>Technology...</option>
                 {this.FormGetOptions("display_tech")}
               </Form.Control>
             </Form.Group>
 
             <Form.Group as={Col} controlId="formGridResolution">
-              <Form.Control as="select">
+              <Form.Control as="select" ref={this.resolution}>
                 <option>Resolution...</option>
                 {this.FormGetOptions("resolution")}
               </Form.Control>
             </Form.Group>
             <Form.Group as={Col} controlId="formGridSubmit">
               <style type="text/css"> {this.theme}</style>
-              <Button variant="flat" type="submit">
+              <Button
+                variant="flat"
+                type="button"
+                onClick={this.CustomSearch.bind(this)}
+              >
                 Search
               </Button>
             </Form.Group>
@@ -128,6 +139,104 @@ class HomeContainer extends Component {
     );
   }
 
+  //build custom query
+  CustomSearch() {
+    let custom_query = "WITH TVS AS (SELECT * FROM ";
+    if (this.store.current.value === "Store...") {
+      custom_query = custom_query + "WALMART UNION ALL SELECT * FROM AMAZON)";
+    } else {
+      custom_query = custom_query + this.store.current.value + ")";
+    }
+
+    //the reason for 1=1 is to make forming the query much easier on the react code. Otherwise, need to check if any input is changed from default value.
+    custom_query = custom_query + " SELECT * FROM TVS WHERE 1=1 ";
+
+    if (this.brand.current.value !== "Brand...") {
+      custom_query =
+        custom_query + " AND (brand ='" + this.brand.current.value + "')";
+    }
+
+    //need to do more work for price since the input options are different than the true text into psql db
+    switch (this.price.current.value) {
+      case "Price...": {
+        break;
+      }
+
+      case "Under $500": {
+        custom_query = custom_query + " AND (price < 500)";
+        break;
+      }
+      case "Under $1000": {
+        custom_query = custom_query + " AND (price < 1000)";
+        break;
+      }
+      case "Under $1500": {
+        custom_query = custom_query + " AND (price < 1500)";
+        break;
+      }
+      case "Under $2000": {
+        custom_query = custom_query + " AND (price < 2000)";
+        break;
+      }
+      case "$2000+": {
+        custom_query = custom_query + " AND (price >= 2000)";
+        break;
+      }
+      default: {
+        console.log("Something went wrong. Are you changing the values?");
+      }
+    }
+
+    switch (this.display_size.current.value) {
+      case "Size...": {
+        break;
+      }
+
+      case '<30"': {
+        custom_query = custom_query + " AND (display_size < 30)";
+        break;
+      }
+      case '<50"': {
+        custom_query = custom_query + " AND (display_size < 50)";
+        break;
+      }
+      case '<60"': {
+        custom_query = custom_query + " AND (display_size < 60)";
+        break;
+      }
+      case '<70"': {
+        custom_query = custom_query + " AND (display_size < 70)";
+        break;
+      }
+      case '70"+': {
+        custom_query = custom_query + " AND (display_size >= 70)";
+        break;
+      }
+      default: {
+        console.log("Something went wrong. Are you changing the values?");
+      }
+    }
+
+    if (this.technology.current.value !== "Technology...") {
+      custom_query =
+        custom_query +
+        " AND (display_tech = '" +
+        this.technology.current.value +
+        "')";
+    }
+
+    if (this.resolution.current.value !== "Resolution...") {
+      custom_query =
+        custom_query +
+        " AND (resolution ='" +
+        this.resolution.current.value +
+        "')";
+    }
+
+    console.log(custom_query);
+    this.getTvs(custom_query);
+  }
+
   // Obtain TVs from the database. Update state upon completion.
   getTvs(desired_query) {
     var xhr = new XMLHttpRequest();
@@ -135,12 +244,17 @@ class HomeContainer extends Component {
     // get a callback when the server responds
     xhr.addEventListener("load", () => {
       // update the state of the component with the result here
-      this.tvs = JSON.parse(xhr.responseText);
+
+      this.curr_tvs = JSON.parse(xhr.responseText);
+
+      if (this.tvs == null) this.tvs = this.curr_tvs;
+
       this.setState({
         active: true,
         curr_page: 1,
         disp_count: 30,
-        num_pages: Math.ceil(this.tvs.length / 30)
+        num_pages: Math.ceil(this.curr_tvs.length / 30),
+        query: desired_query
       });
     });
     // open the request with the verb and the url
@@ -184,12 +298,12 @@ class HomeContainer extends Component {
   RenderTvs() {
     const start_index = this.state.disp_count * (this.state.curr_page - 1);
     const end_index = Math.min(
-      this.tvs.length - 1,
+      this.curr_tvs.length - 1,
       start_index + this.state.disp_count - 1
     );
 
-    console.log(this.tvs.slice(start_index, end_index + 1));
-    const build_tv_list = this.tvs
+    console.log(this.curr_tvs.slice(start_index, end_index + 1));
+    const build_tv_list = this.curr_tvs
       .slice(start_index, end_index + 1)
       .map(tvs => (
         <Col>

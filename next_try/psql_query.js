@@ -38,15 +38,15 @@ app.post("/", function(request, response) {
 
   var query = client.query(request.body.query, (err, res) => {
     if (err) {
-      console.log(400).send(err.stack);
+      console.log(err.stack);
       response.status(400).send(err.stack);
+      client.end();
       return err.stack;
     } else {
       //console.log(res.rows);
       response.status(200).send(res.rows);
+      client.end();
       return res.rows;
     }
-
-    client.end();
   });
 });

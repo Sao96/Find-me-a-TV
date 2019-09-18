@@ -37,6 +37,18 @@
   max-height: 340px;
 }
 
+.banner {
+  background: rgb(86, 216, 255);
+  background: linear-gradient(
+    180deg,
+    rgba(86, 216, 255, 1) 5%,
+    rgba(61, 110, 122, 1) 100%
+  );
+
+  color: rgba(86, 216, 255, 1);
+  display: block;
+}
+
 .center {
   position: absolute;
   left: 46.5%;
