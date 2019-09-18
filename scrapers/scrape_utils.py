@@ -32,6 +32,9 @@ def substr_strs(source: str, begin: str, end: str) -> str:
 
       return source[ begin_index : end_index + 1 ] 
 
+#     given a string, it retrieves only the numeric part of it (keeping . for change portion)
+#     @s: a string to filter out any non-numeric parts of it (e.g, units)
+#     @return: s converted into a number without extra characters or nunits
 def get_num_only(s:str) -> str:
       for pos in range(0, len(s)):
             if not (s[pos].isdigit() or s[pos]=='.'):
@@ -39,6 +42,19 @@ def get_num_only(s:str) -> str:
 
       return s
 
+#     goes through a given list of dicts values and searches for any empty strings and replaces with 'NULL'
+#     @tvs: list of dict objects that represent TV's
+#     @return: @tvs with any field containing the empty string as NULL
+def add_null_vals(tvs: list) -> list:
+      
+      #remove any tvs that have model field being null
+      tvs = [tv for tv in tvs if (tv['model'] != '')]
+
+      for tv in tvs:
+            for field in tv:
+                  if tv[field] == '':
+                        tv[field] = 'NULL'
+      return tvs
 
 
       

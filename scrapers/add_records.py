@@ -1,8 +1,12 @@
-import psycopg2
+import psycop
 
-def add_records(tvs: list, store: str):
+#    Function that logs into a psql DB and adds a list of Ts
+#    @tvs: a list of tv's with the correct fields defid
+#    @store: the store the tv's came from
+#    @login: a dict with all credentials filled out (expects "host","database","user", "password" )
+def add_records(tvs: list, store: str, login: dict):
     try:
-        conn = psycopg2.connect(host = "ec2-54-235-86-101.compute-1.amazonaws.com", database = "dbv6tpm3c2j6bg", user="vxnzeehptioyeb", password = "e2ea07be01dd5c0f8963a5bc9d5ee51dd7f403fa2951c8ed5cc40adf5ccb7f20", port = 5432)
+        conn = psycopg2.connect(login["host"] , login["database"], login["user"], login["password"], login["port"])
         print('successfully connected to DB')
         
         

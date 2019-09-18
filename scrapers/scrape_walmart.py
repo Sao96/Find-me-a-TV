@@ -127,22 +127,6 @@ def process_urls(urls_list : list) -> list():
             products.append(process_product_page(curr_page, prod_url))
       
       return products
-      
-
-
-#     goes through a given list of dicts values and searches for any empty strings and replaces with 'NULL'
-#     @tvs: list of dict objects that represent TV's
-#     @return: @tvs with any field containing the empty string as NULL
-def add_null_vals(tvs: list) -> list:
-
-      #remove any tvs that have model field being null
-      tvs = [tv for tv in tvs if (tv['model'] != '')]
-
-      for tv in tvs:
-            for field in tv:
-                  if tv[field] == '':
-                        tv[field] = 'NULL'
-      return tvs
 
 #     main method
 #     runs through walmart's website and scrapes off TV's, parses them into a format appropriate to pass into a PSQL DB

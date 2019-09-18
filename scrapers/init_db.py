@@ -1,6 +1,8 @@
 import psycopg2
 
-def create_tables():
+#     function that initializes the tables for the TV's, based on where they were scraped from
+#     @login: a dict with all credentials filled out (expects "host","database","user", "password" ) 
+def create_tables(login: dict):
     commands = (
         """ CREATE TABLE AMAZON(
             model text PRIMARY KEY,
@@ -29,8 +31,8 @@ def create_tables():
         """)
 
     try:
-        conn = psycopg2.connect(host = "ec2-54-235-86-101.compute-1.amazonaws.com", database = "dbv6tpm3c2j6bg", user="vxnzeehptioyeb", password = "e2ea07be01dd5c0f8963a5bc9d5ee51dd7f403fa2951c8ed5cc40adf5ccb7f20", port = 5432)
-        print('successfully connected to ')
+        conn = psycopg2.connect(login["host"] , login["database"], login["user"], login["password"], login["port"])
+        print('successfully connected to DB')
         cur = conn.cursor()
 
         for command in commands:

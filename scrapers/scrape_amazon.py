@@ -2,6 +2,8 @@
 import time
 from scrape_utils import  *
 
+#     given a string @url, it checks if @url is truly a url. Used to filter bad parsed strings when getting the list of TV urls
+#     @url: a string to verify if it's a actual amazon product link or not.
 def remove_bad_url(url: str) -> bool:
     url_prefix = url[0:3]
 
@@ -10,7 +12,9 @@ def remove_bad_url(url: str) -> bool:
 
     return True
 
-
+#     given a page for search results of tv's, goes through and grabs the links to the tv's
+#     @search_result: search source page from amazon
+#     @return: a list of urls for all present tv's in search result
 def parse_product_links(search_result: str) -> list:
     urls_list = list()
 
@@ -30,6 +34,8 @@ def parse_product_links(search_result: str) -> list:
     
     return filter(remove_bad_url, urls_list)
 
+#     gets a url of a image of TV from current prod page, primarily a helper for @process_product_page
+#     @prod_page: source of an web page of a amazon tv product 
 def get_image_url(prod_page: str) -> str:
 
     prod_page = prod_page[ prod_page.find('{"hiRes":') : ]
@@ -38,6 +44,10 @@ def get_image_url(prod_page: str) -> str:
     url_end_index = prod_page.find('"', url_start_index)
     return ( prod_page[ url_start_index : url_end_index ] )
 
+#     scrapes tv info from a amazon product page, and returns a dict object with relevant info about it
+#     @prod_page: source of an web page of a amazon tv product
+#     @prod_url: the url for @prod_page
+#     @return: a dict object with all relevant info for the current tv from the given page
 def process_product_page(prod_page: str, prod_url: str) -> dict:
     tv_info = dict()
 
@@ -80,15 +90,14 @@ def process_product_page(prod_page: str, prod_url: str) -> dict:
 
     #We can't have anything not a number here for the psql DB
     tv_info['ref_rate'] = get_num_only(tv_info['ref_rate'])
-    print(tv_info)
 
     return tv_info
 
-
-def process_urls(urls_list : list) -> list():
+#     function that will run through each url in a list of amazon tv urls, and gets the tv data for each url
+#     @urls_list: a list of url's to amazon tv's on the current search page
+#     @return: a list of tv's with information scraped from amazon
+def process_urls(urls_list : list) -> list:
     products = list()
-
-    ctr = 0
 
     for prod_url in urls_list:
         #sleep for 10 (will be 30) seconds to gracefully scrape with very minimal requests. MUST update time when done, too agressive now.
@@ -97,22 +106,11 @@ def process_urls(urls_list : list) -> list():
         curr_page = scrape_data(true_url)
         products.append(process_product_page(curr_page, true_url))
 
-    # with open('amazon_prod.html', 'r') as myFile:
-    #     curr_page = myFile.read()      
-
     return products
 
-#     goes through a given list of dicts values and searches for any empty strings and replaces with 'NULL'
-#     @tvs: list of dict objects that represent TV's
-#     @return: @tvs with any field containing the empty string as NULL
-def add_null_vals(tvs: list) -> list:
-    tvs = [tv for tv in tvs if (tv['model'] != '')]
-    for tv in tvs:
-        for field in tv:
-                if tv[field] == '':
-                    tv[field] = 'NULL'
-    return tvs
-
+#     clean extra whitespace and units on fields
+#     @tvs: a list of TV's to be cleaned of whitespace or units/ other junk on fields
+#     @return: @tvs rid of whitespace and useless characters in it's fields
 def remove_extra_chars(tvs: list) -> list:
     for tv in tvs:
         for field in tv:
@@ -121,6 +119,9 @@ def remove_extra_chars(tvs: list) -> list:
     
     return tvs
 
+#     main method
+#     runs through amazon's website and scrapes off TV's, parses them into a format appropriate to pass into a PSQL DB
+#     obtains each TV's brand, price, model, product URL, thumbnail URL, display size, display technology, resolution, and refresh rate
 def scrape_amazon_tvs() -> list:
     tvs = list()
     
