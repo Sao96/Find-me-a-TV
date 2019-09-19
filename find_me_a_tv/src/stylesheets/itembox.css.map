@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "mappings": "AAAA,AAAA,QAAQ,CAAC;EACP,KAAK,EAAE,OAAO;EACd,WAAW,EAAE,+BAA+B;EAC5C,SAAS,EAAE,KAAK;CACjB",
-  "sources": ["itembox.scss"],
-  "names": [],
-  "file": "itembox.css"
-}

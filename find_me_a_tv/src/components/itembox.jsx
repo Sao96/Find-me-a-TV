@@ -1,6 +1,8 @@
-import React, { Component } from "react";
-import { Navbar, Nav, Form, FormControl, Button } from "react-bootstrap";
+import React from "react";
 
+// Component for the actual display of a TV. May assign defaults or remove values if field is undefined.
+// @props: all details about a specific tv to display.
+// @return: a component that has all details to display about a TV
 function ItemBox(props) {
   let tv_image, tv_price;
 

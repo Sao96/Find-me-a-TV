@@ -20,8 +20,7 @@ class ConcernFroge extends Component {
   }
 }
 
-//main body component that holds all TV's
-//
+//main body component responsible for managing all content of the TV's
 class HomeContainer extends Component {
   constructor(props) {
     super(props);
@@ -34,22 +33,13 @@ class HomeContainer extends Component {
     this.display_size = React.createRef();
     this.technology = React.createRef();
     this.resolution = React.createRef();
-    this.theme = `
-    .btn-flat {
-      background: rgb(68, 189, 226);
-      color: rgb(255, 255, 255);
-      border: 2px solid rgba(0, 126, 148, 0.349);
-      border-radius: 4px;
-      padding: 5px 10px;
-      font-family: 'Raleway', sans-serif;
-    }
-
-
- 
-  `;
+    // get the first query of TV's, by default, display everything.
     this.getTvs("select * from walmart union all select * from amazon;");
   }
 
+  // function that creaters a list of all possible field options, based on the union of all store's tv's. Gets each defined value for @field based on the database.
+  // @field: the search field to retrieve all possible values for
+  // @return: a list of jsx elements containing each possible option
   FormGetOptions(field) {
     let field_only = new Array();
 
@@ -70,8 +60,19 @@ class HomeContainer extends Component {
     return field_options;
   }
 
-  //form to get what we need to query.
+  // function that allows a user to narrow their search to query for TV's of their desired features
+  // @return: a form for the user to narrow their search of TV's for
   SearchSettings() {
+    const btn_theme = `
+    .btn-flat {
+      background: rgb(68, 189, 226);
+      color: rgb(255, 255, 255);
+      border: 2px solid rgba(0, 126, 148, 0.349);
+      border-radius: 4px;
+      padding: 5px 10px;
+      font-family: 'Raleway', sans-serif;
+    }
+  `;
     return (
       <div>
         <Form>
@@ -127,6 +128,7 @@ class HomeContainer extends Component {
               </Form.Control>
             </Form.Group>
             <Form.Group as={Col} controlId="formGridSubmit">
+              <style type="text/css"> {btn_theme}</style>
               <Button
                 variant="flat"
                 type="button"
@@ -141,7 +143,7 @@ class HomeContainer extends Component {
     );
   }
 
-  //build custom query
+  // function that will build a query for TV's based on the user's desired features and update the current set of displayed TV's
   CustomSearch() {
     let custom_query = "WITH TVS AS (SELECT * FROM ";
     if (this.store.current.value === "Store...") {
@@ -235,11 +237,11 @@ class HomeContainer extends Component {
         "')";
     }
 
-    console.log(custom_query);
     this.getTvs(custom_query);
   }
 
   // Obtain TVs from the database. Update state upon completion.
+  // @desired_query: the query to the psql database to get TV's with certain potential constraints.
   getTvs(desired_query) {
     var xhr = new XMLHttpRequest();
 
@@ -267,12 +269,15 @@ class HomeContainer extends Component {
     xhr.send(JSON.stringify({ query: desired_query }));
   }
 
+  // a function to be bound with each page number on the pagination navigation bar. Upon clicking the desired page number, the state will change into the clicked number.
+  // @pageNumber: the clicked page number
   update_curr_page(pageNumber) {
-    console.log("current page: " + pageNumber);
     this.setState({ curr_page: pageNumber });
   }
 
-  TVPagination(props) {
+  // a function that takes the current TV results and paginates it based on how many tv's are displayed per page
+  // @return: pagination of tv search results.
+  TVPagination() {
     let items = [];
     for (let number = 1; number <= this.state.num_pages; number++) {
       items.push(
@@ -281,7 +286,6 @@ class HomeContainer extends Component {
           onClick={this.update_curr_page.bind(this, number)}
           onChange={this.update_curr_page}
           active={number === this.state.curr_page}
-          className={"paginationLinkStyle"}
         >
           {number}
         </PageItem>
@@ -290,14 +294,15 @@ class HomeContainer extends Component {
 
     const paginationBasic = (
       <div className="center">
-        <Pagination variant="Info">{items}</Pagination>
+        <Pagination>{items}</Pagination>
       </div>
     );
 
     return paginationBasic;
   }
 
-  // over here, we get the list of TVs & state of the home container.
+  // partitions out a list of n tv's, where n is the number of tv's displayed per page, based on the current page state
+  // @return: a component which displays n tv's, based on the current page state
   RenderTvs() {
     const start_index = this.state.disp_count * (this.state.curr_page - 1);
     const end_index = Math.min(
@@ -305,7 +310,6 @@ class HomeContainer extends Component {
       start_index + this.state.disp_count - 1
     );
 
-    console.log(this.curr_tvs.slice(start_index, end_index + 1));
     const build_tv_list = this.curr_tvs
       .slice(start_index, end_index + 1)
       .map(tvs => (
@@ -331,7 +335,9 @@ class HomeContainer extends Component {
     );
   }
 
-  DisplayTv(props) {
+  // determines if the TV's have been loaded or not, if so, display them, else, leave a default component.
+  // @return: a default waiting component if tv's are not loaded, and the tv's if they are.
+  DisplayTv() {
     if (this.state === null) {
       return <ConcernFroge />;
     }
@@ -349,12 +355,7 @@ class HomeContainer extends Component {
   }
 
   render() {
-    return (
-      <div id="homecontainer">
-        <style type="text/css"> {this.theme}</style>
-        {this.DisplayTv()}
-      </div>
-    );
+    return <div id="homecontainer">{this.DisplayTv()}</div>;
   }
 }
 

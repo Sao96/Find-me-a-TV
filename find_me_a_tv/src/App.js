@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import "./stylesheets/itembox.css";
+import "./stylesheets/styles.css";
 
 import HomeContainer from "./components/homecontainer";
 import MainBanner from "./components/mainbanner";

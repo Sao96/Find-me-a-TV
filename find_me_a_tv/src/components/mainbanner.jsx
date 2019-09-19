@@ -1,5 +1,7 @@
 import React from "react";
 
+// the main banner at the top of the page
+// @return: a component which contains a banner at top over a linear gradient for decorative purposes.
 function MainBanner() {
   return (
     <div className="banner">
