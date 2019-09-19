@@ -10,11 +10,17 @@ import {
 } from "react-bootstrap";
 import ItemBox from "./itembox";
 
-class ConcernFroge extends Component {
+class Loading extends Component {
   render() {
     return (
-      <div>
-        <img src="https://static-cdn.jtvnw.net/jtv_user_pictures/f5ea9bbf-8013-4c37-84b8-8f7608e8e833-profile_image-300x300.png"></img>{" "}
+      //  Credit: https://dribbble.com/shots/5092176-Newton-Loader
+      <div class="gooey">
+        <span class="dot"></span>
+        <div class="dots">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
       </div>
     );
   }
@@ -262,7 +268,7 @@ class HomeContainer extends Component {
       });
     });
     // open the request with the verb and the url
-    xhr.open("POST", "http://localhost:8080");
+    xhr.open("POST", "https://find-me-a-tv-psql-grabber.herokuapp.com/");
 
     xhr.setRequestHeader("Content-Type", "application/json");
     // send the request
@@ -331,6 +337,7 @@ class HomeContainer extends Component {
         <Container>
           <Row>{build_tv_list}</Row>
         </Container>
+        {window.scrollTo(0, 0)}
       </div>
     );
   }
@@ -339,7 +346,7 @@ class HomeContainer extends Component {
   // @return: a default waiting component if tv's are not loaded, and the tv's if they are.
   DisplayTv() {
     if (this.state === null) {
-      return <ConcernFroge />;
+      return <Loading />;
     }
 
     return (
