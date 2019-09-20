@@ -31,7 +31,7 @@ def create_tables(login: dict):
         """)
 
     try:
-        conn = psycopg2.connect(login["host"] , login["database"], login["user"], login["password"], login["port"])
+        conn = psycopg2.connect(host = login["host"] , database = login["database"], user = login["user"], password = login["password"], port = login["port"])
         print('successfully connected to DB')
         cur = conn.cursor()
 

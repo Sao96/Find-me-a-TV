@@ -1,4 +1,4 @@
-import psycop
+import psycopg2
 
 #    Function that logs into a psql DB and adds a list of Ts
 #    @tvs: a list of tv's with the correct fields defid
@@ -6,7 +6,7 @@ import psycop
 #    @login: a dict with all credentials filled out (expects "host","database","user", "password" )
 def add_records(tvs: list, store: str, login: dict):
     try:
-        conn = psycopg2.connect(login["host"] , login["database"], login["user"], login["password"], login["port"])
+        conn = psycopg2.connect(host = login["host"] , database = login["database"], user = login["user"], password = login["password"], port = login["port"])
         print('successfully connected to DB')
         
         
