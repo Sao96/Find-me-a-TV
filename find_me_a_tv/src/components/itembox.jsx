@@ -21,7 +21,12 @@ function ItemBox(props) {
   return (
     <div className="itembox">
       <a href={props.product_url}>
-        <img className="image_size" id="item_img" src={tv_image}></img>
+        <img
+          alt={"An image of TV " + props.model}
+          className="image_size"
+          id="item_img"
+          src={tv_image}
+        ></img>
       </a>
       <span>
         <br></br>

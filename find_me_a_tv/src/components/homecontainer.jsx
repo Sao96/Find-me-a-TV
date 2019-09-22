@@ -56,11 +56,11 @@ class HomeContainer extends Component {
   // @field: the search field to retrieve all possible values for
   // @return: a list of jsx elements containing each possible option
   FormGetOptions(field) {
-    let field_only = new Array();
+    let field_only = [];
 
     for (let n = 0; n < this.tvs.length; n++) {
       console.log(this.tvs[n][field]);
-      if (this.tvs[n][field] != "NULL" && this.tvs[n][field] != null)
+      if (this.tvs[n][field] !== "NULL" && this.tvs[n][field] !== null)
         field_only.push(this.tvs[n][field]);
     }
 
@@ -197,7 +197,7 @@ class HomeContainer extends Component {
     });
     // open the request with the verb and the url
     // xhr.open("POST", "localhost:8080");
-    xhr.open("POST", "http://localhost:8080");
+    xhr.open("POST", "https://find-me-a-tv-psql-grabber.herokuapp.com/");
 
     xhr.setRequestHeader("Content-Type", "application/json");
     // send the request

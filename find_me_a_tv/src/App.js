@@ -4,10 +4,6 @@ import "./stylesheets/styles.css";
 
 import HomeContainer from "./components/homecontainer";
 
-function background_color() {
-  return;
-}
-
 function App() {
   document.body.classList.add("main-bg");
   return (

@@ -5,7 +5,11 @@ import React from "react";
 function MainBanner() {
   return (
     <div className="banner">
-      <img className="banner_size" src="banner.png"></img>
+      <img
+        alt="A banner with a TV and the text Find Me a TV"
+        className="banner_size"
+        src="banner.png"
+      ></img>
     </div>
   );
 }
