@@ -1,0 +1,22 @@
+{
+  "name": "psql_grabber",
+  "version": "1.0.0",
+  "description": "access psql queries to your db",
+  "main": "psql_query.js",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.1.0",
+    "express": "^4.17.1",
+    "pg": "^7.12.1",
+    "secure-env": "^1.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "sao96",
+  "license": "MIT",
+  "engines": {
+    "node": "12.9.1"
+  }
+}
