@@ -17,11 +17,11 @@ A simple react app that connects to the database and displays TV's with the opti
 The python web scrapers can be ran as frequent as you choose. They can be ran automatedly to help keep the TV database up to date. The web application can afterward read from the records in the database, and request queries to get TV's to display.
 
 ## Dependencies
-* Node 
-* NPM
-* Python 3 & The following packages:
-    *  fake_useragent
-    *  psycopg2
+* [Node](https://nodejs.org/en/) 
+* [NPM](https://www.npmjs.com/get-npm)
+* [Python 3](python.org/downloads/) & The following packages:
+    *  [fake_useragent](https://pypi.org/project/fake-useragent/)
+    *  [psycopg2](https://pypi.org/project/psycopg2/)
     
 
 
