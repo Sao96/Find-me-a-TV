@@ -58,8 +58,8 @@
 }
 
 .center {
-  position: absolute;
-  left: 46.5%;
+  position: relative;
+  left: 40.5%;
 }
 
 .content {

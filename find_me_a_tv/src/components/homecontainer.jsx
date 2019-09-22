@@ -1,4 +1,6 @@
+import MainBanner from "./mainbanner";
 import React, { Component } from "react";
+
 import {
   Container,
   Col,
@@ -40,7 +42,14 @@ class HomeContainer extends Component {
     this.technology = React.createRef();
     this.resolution = React.createRef();
     // get the first query of TV's, by default, display everything.
-    this.getTvs("select * from walmart union all select * from amazon;");
+    this.getTvs({
+      store: "Store...",
+      brand: "Brand...",
+      price: "Price...",
+      display_size: "Size...",
+      technology: "Technology...",
+      resolution: "Resolution..."
+    });
   }
 
   // function that creaters a list of all possible field options, based on the union of all store's tv's. Gets each defined value for @field based on the database.
@@ -50,7 +59,9 @@ class HomeContainer extends Component {
     let field_only = new Array();
 
     for (let n = 0; n < this.tvs.length; n++) {
-      if (this.tvs[n][field] != "NULL") field_only.push(this.tvs[n][field]);
+      console.log(this.tvs[n][field]);
+      if (this.tvs[n][field] != "NULL" && this.tvs[n][field] != null)
+        field_only.push(this.tvs[n][field]);
     }
 
     //Convert to set to remove dupes, flip back to list.
@@ -151,97 +162,14 @@ class HomeContainer extends Component {
 
   // function that will build a query for TV's based on the user's desired features and update the current set of displayed TV's
   CustomSearch() {
-    let custom_query = "WITH TVS AS (SELECT * FROM ";
-    if (this.store.current.value === "Store...") {
-      custom_query = custom_query + "WALMART UNION ALL SELECT * FROM AMAZON)";
-    } else {
-      custom_query = custom_query + this.store.current.value + ")";
-    }
-
-    //the reason for 1=1 is to make forming the query much easier on the react code. Otherwise, need to check if any input is changed from default value.
-    custom_query = custom_query + " SELECT * FROM TVS WHERE 1=1 ";
-
-    if (this.brand.current.value !== "Brand...") {
-      custom_query =
-        custom_query + " AND (brand ='" + this.brand.current.value + "')";
-    }
-
-    //need to do more work for price since the input options are different than the true text into psql db
-    switch (this.price.current.value) {
-      case "Price...": {
-        break;
-      }
-
-      case "Under $500": {
-        custom_query = custom_query + " AND (price < 500)";
-        break;
-      }
-      case "Under $1000": {
-        custom_query = custom_query + " AND (price < 1000)";
-        break;
-      }
-      case "Under $1500": {
-        custom_query = custom_query + " AND (price < 1500)";
-        break;
-      }
-      case "Under $2000": {
-        custom_query = custom_query + " AND (price < 2000)";
-        break;
-      }
-      case "$2000+": {
-        custom_query = custom_query + " AND (price >= 2000)";
-        break;
-      }
-      default: {
-        console.log("Something went wrong. Are you changing the values?");
-      }
-    }
-
-    switch (this.display_size.current.value) {
-      case "Size...": {
-        break;
-      }
-
-      case '<30"': {
-        custom_query = custom_query + " AND (display_size < 30)";
-        break;
-      }
-      case '<50"': {
-        custom_query = custom_query + " AND (display_size < 50)";
-        break;
-      }
-      case '<60"': {
-        custom_query = custom_query + " AND (display_size < 60)";
-        break;
-      }
-      case '<70"': {
-        custom_query = custom_query + " AND (display_size < 70)";
-        break;
-      }
-      case '70"+': {
-        custom_query = custom_query + " AND (display_size >= 70)";
-        break;
-      }
-      default: {
-        console.log("Something went wrong. Are you changing the values?");
-      }
-    }
-
-    if (this.technology.current.value !== "Technology...") {
-      custom_query =
-        custom_query +
-        " AND (display_tech = '" +
-        this.technology.current.value +
-        "')";
-    }
-
-    if (this.resolution.current.value !== "Resolution...") {
-      custom_query =
-        custom_query +
-        " AND (resolution ='" +
-        this.resolution.current.value +
-        "')";
-    }
+    let custom_query = {
+      store: this.store.current.value,
+      brand: this.brand.current.value,
+      price: this.price.current.value,
+      display_size: this.display_size.current.value,
+      technology: this.technology.current.value,
+      resolution: this.resolution.current.value
+    };
 
     this.getTvs(custom_query);
   }
@@ -268,11 +196,12 @@ class HomeContainer extends Component {
       });
     });
     // open the request with the verb and the url
-    xhr.open("POST", "https://find-me-a-tv-psql-grabber.herokuapp.com/");
+    // xhr.open("POST", "localhost:8080");
+    xhr.open("POST", "http://localhost:8080");
 
     xhr.setRequestHeader("Content-Type", "application/json");
     // send the request
-    xhr.send(JSON.stringify({ query: desired_query }));
+    xhr.send(JSON.stringify(desired_query));
   }
 
   // a function to be bound with each page number on the pagination navigation bar. Upon clicking the desired page number, the state will change into the clicked number.
@@ -336,6 +265,10 @@ class HomeContainer extends Component {
       <div>
         <Container>
           <Row>{build_tv_list}</Row>
+          <br></br>
+          <br></br>
+          <br></br>
+          {this.TVPagination()}
         </Container>
         {window.scrollTo(0, 0)}
       </div>
@@ -351,12 +284,9 @@ class HomeContainer extends Component {
 
     return (
       <div>
+        <MainBanner />
         {this.SearchSettings()}
         {this.RenderTvs()}
-        <br></br>
-        <br></br>
-        <br></br>
-        {this.TVPagination()}
       </div>
     );
   }
