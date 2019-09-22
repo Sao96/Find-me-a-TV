@@ -19,7 +19,7 @@ The python web scrapers can be ran as frequent as you choose. They can be ran au
 ## Dependencies
 * [Node](https://nodejs.org/en/) 
 * [NPM](https://www.npmjs.com/get-npm)
-* [Python 3.x](python.org/downloads/) & The following packages:
+* [Python 3.x](https://python.org/downloads/) & The following packages:
     *  [fake_useragent](https://pypi.org/project/fake-useragent/)
     *  [psycopg2](https://pypi.org/project/psycopg2/)
     
