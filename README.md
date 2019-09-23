@@ -1,5 +1,5 @@
 # Find-me-a-TV
-Find Me a TV (FMaT) is a website that displays TV's from all around the web, giving users an easy way to search for TV's from all around the web. 
+Find Me a TV (FMaT) is a website that displays TV's from all around the web, giving users an easy way to search for TV's from all around the web. A live version of this application can be found at https://findme-a-tv.herokuapp.com/.
 
 ## General Usage
 There are 3 major components that make FMaT work. Although touched on here, details on implementation are contained in a README in each folder respectively.
@@ -7,11 +7,17 @@ There are 3 major components that make FMaT work. Although touched on here, deta
 ### Web Scrapers
 All TV's are retrieved by web scraping. Each store has a special scraper written for it, but the pattern is generally the same. Load the search results page, grab the URL of each TV, then open each of them individually and scrape the meta information from them. Push the results into a PSQL Database.
 
+This component can be found within the `scrapers` directory.
+
 ### Database Query App
 All scraped TV's are pushed into a PSQL database. The DB holds a record of a TV's model, price, brand, display size, technology, refresh rate, resolution, and a picture url as well as the actual link to the product page itself. A separate backend node app is ran to be able to grant access only to specific queries from the website.
 
+This component can be found within the `psql_grabber` folder
+
 ### Website
 A simple react app that connects to the database and displays TV's with the option to form a search filter (custom query)
+
+This component can be found within the `find-me-a-tv` folder
 
 ## Connecting the Components
 The python web scrapers can be ran as frequent as you choose. They can be ran automated to help keep the TV database up to date. The web application can afterward read from the records in the database, and request queries to get TV's to display.
